@@ -8,148 +8,150 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for reading and parsing CSV files.
- * Handles the airline satisfaction dataset format.
+ * A utility class to read data from a CSV file.
+ * <p>
+ * This class handles opening the file, reading it line by line,
+ * and converting each line of text into a {@link PassengerRecord} object.
+ * </p>
+ * 
+ * @author IT221 Student
  */
 public class CSVReader {
     
     private String filePath;
-    private String[] headers;
     
+    /**
+     * Constructor for CSVReader.
+     * 
+     * @param filePath The path to the CSV file to be read.
+     */
     public CSVReader(String filePath) {
         this.filePath = filePath;
     }
     
     /**
-     * Read all records from the CSV file
-     * @return List of PassengerRecord objects
-     * @throws IOException if file reading fails
+     * Reads all records from the CSV file.
+     * 
+     * @return A list of PassengerRecord objects containing the data.
+     * @throws IOException If there is an error reading the file.
      */
     public List<PassengerRecord> readAllRecords() throws IOException {
+        // We use an ArrayList to store the records because we don't know
+        // how many records there are in advance.
         List<PassengerRecord> records = new ArrayList<>();
         
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            // Read header line
-            String headerLine = br.readLine();
-            if (headerLine != null) {
-                headers = headerLine.split(",");
-            }
+        // Use BufferedReader for efficient reading of large files
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        
+        // Read the first line (header) and ignore it
+        String headerLine = reader.readLine();
+        
+        String line;
+        int lineNumber = 1; // Start counting from 1 (header is line 1)
+        
+        // Loop through each line in the file
+        while ((line = reader.readLine()) != null) {
+            lineNumber++;
             
-            // Read data lines
-            String line;
-            int lineNumber = 0;
-            while ((line = br.readLine()) != null) {
-                lineNumber++;
-                try {
-                    PassengerRecord record = parseLine(line, lineNumber);
-                    if (record != null) {
-                        records.add(record);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Warning: Skipping line " + lineNumber + " due to parsing error: " + e.getMessage());
-                }
+            // Convert the CSV line text into a PassengerRecord object
+            PassengerRecord record = parseLine(line);
+            
+            // If conversion was successful, add it to our list
+            if (record != null) {
+                records.add(record);
             }
         }
+        
+        // Close the file reader to free up system resources
+        reader.close();
         
         return records;
     }
     
     /**
-     * Parse a single CSV line into a PassengerRecord
-     * @param line CSV line to parse
-     * @param lineNumber Line number for error reporting
-     * @return PassengerRecord object or null if parsing fails
+     * Parses a single line of text from the CSV file into a PassengerRecord object.
+     * 
+     * @param line The comma-separated string from the file.
+     * @return A PassengerRecord object, or null if the line is invalid.
      */
-    private PassengerRecord parseLine(String line, int lineNumber) {
+    private PassengerRecord parseLine(String line) {
+        // Split the line by commas to get individual values
         String[] values = line.split(",");
         
-        if (values.length < 25) {
+        // We expect at least 26 columns now (including the new Date column)
+        // If the line is too short, it's probably corrupt or empty
+        if (values.length < 26) {
             return null;
         }
         
         PassengerRecord record = new PassengerRecord();
         
         try {
-            // Parse each field with appropriate type handling
-            record.setRowIndex(parseInteger(values[0], 0));
-            record.setId(parseInteger(values[1], 0));
-            record.setGender(values[2].trim());
-            record.setCustomerType(values[3].trim());
-            record.setAge(parseInteger(values[4], 0));
-            record.setTypeOfTravel(values[5].trim());
-            record.setTravelClass(values[6].trim());
-            record.setFlightDistance(parseInteger(values[7], 0));
-            record.setInflightWifiService(parseInteger(values[8], 0));
-            record.setDepartureArrivalTimeConvenient(parseInteger(values[9], 0));
-            record.setEaseOfOnlineBooking(parseInteger(values[10], 0));
-            record.setGateLocation(parseInteger(values[11], 0));
-            record.setFoodAndDrink(parseInteger(values[12], 0));
-            record.setOnlineBoarding(parseInteger(values[13], 0));
-            record.setSeatComfort(parseInteger(values[14], 0));
-            record.setInflightEntertainment(parseInteger(values[15], 0));
-            record.setOnBoardService(parseInteger(values[16], 0));
-            record.setLegRoomService(parseInteger(values[17], 0));
-            record.setBaggageHandling(parseInteger(values[18], 0));
-            record.setCheckinService(parseInteger(values[19], 0));
-            record.setInflightService(parseInteger(values[20], 0));
-            record.setCleanliness(parseInteger(values[21], 0));
-            record.setDepartureDelayInMinutes(parseDouble(values[22], 0.0));
-            record.setArrivalDelayInMinutes(parseDouble(values[23], 0.0));
-            record.setSatisfaction(values[24].trim());
+            // Column 0: Row Index (ignore or store if needed)
+            // Column 1: ID
+            record.setId(Integer.parseInt(values[1]));
+            
+            // Column 2: Gender
+            record.setGender(values[2]);
+            
+            // Column 3: Customer Type
+            record.setCustomerType(values[3]);
+            
+            // Column 4: Age
+            record.setAge(Integer.parseInt(values[4]));
+            
+            // Column 5: Type of Travel
+            record.setTypeOfTravel(values[5]);
+            
+            // Column 6: Class
+            record.setTravelClass(values[6]);
+            
+            // Column 7: Flight Distance
+            record.setFlightDistance(Integer.parseInt(values[7]));
+            
+            // Columns 8-21: Service Ratings
+            record.setInflightWifiService(Integer.parseInt(values[8]));
+            record.setDepartureArrivalTimeConvenient(Integer.parseInt(values[9]));
+            record.setEaseOfOnlineBooking(Integer.parseInt(values[10]));
+            record.setGateLocation(Integer.parseInt(values[11]));
+            record.setFoodAndDrink(Integer.parseInt(values[12]));
+            record.setOnlineBoarding(Integer.parseInt(values[13]));
+            record.setSeatComfort(Integer.parseInt(values[14]));
+            record.setInflightEntertainment(Integer.parseInt(values[15]));
+            record.setOnBoardService(Integer.parseInt(values[16]));
+            record.setLegRoomService(Integer.parseInt(values[17]));
+            record.setBaggageHandling(Integer.parseInt(values[18]));
+            record.setCheckinService(Integer.parseInt(values[19]));
+            record.setInflightService(Integer.parseInt(values[20]));
+            record.setCleanliness(Integer.parseInt(values[21]));
+            
+            // Columns 22-23: Delays (Double values)
+            record.setDepartureDelayInMinutes(parseDoubleSafe(values[22]));
+            record.setArrivalDelayInMinutes(parseDoubleSafe(values[23]));
+            
+            // Column 24: Satisfaction
+            record.setSatisfaction(values[24]);
+
+            // Column 25: Flight Date
+            // We trim() to remove any extra whitespace or newlines
+            record.setFlightDate(values[25].trim());
             
             return record;
-        } catch (Exception e) {
-            throw new RuntimeException("Error parsing line " + lineNumber + ": " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Safely parse an integer value
-     * @param value String value to parse
-     * @param defaultValue Default value if parsing fails
-     * @return Parsed integer or default value
-     */
-    private int parseInteger(String value, int defaultValue) {
-        if (value == null || value.trim().isEmpty()) {
-            return defaultValue;
-        }
-        try {
-            return Integer.parseInt(value.trim());
+            
         } catch (NumberFormatException e) {
-            return defaultValue;
+            // If a number column contains bad data (like text), we return null to skip this record
+            System.out.println("Error parsing line: " + e.getMessage());
+            return null;
         }
     }
     
     /**
-     * Safely parse a double value
-     * @param value String value to parse
-     * @param defaultValue Default value if parsing fails
-     * @return Parsed double or default value
+     * Helper to parse double, returning 0.0 if empty.
      */
-    private double parseDouble(String value, double defaultValue) {
+    private double parseDoubleSafe(String value) {
         if (value == null || value.trim().isEmpty()) {
-            return defaultValue;
+            return 0.0;
         }
-        try {
-            return Double.parseDouble(value.trim());
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-    
-    /**
-     * Get the CSV headers
-     * @return Array of column headers
-     */
-    public String[] getHeaders() {
-        return headers;
-    }
-    
-    /**
-     * Get the file path
-     * @return File path string
-     */
-    public String getFilePath() {
-        return filePath;
+        return Double.parseDouble(value);
     }
 }

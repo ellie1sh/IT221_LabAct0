@@ -1,31 +1,49 @@
 package model;
 
 /**
- * Model class representing a passenger satisfaction record.
- * Contains information about flight details, service ratings, and satisfaction level.
+ * This class represents a single passenger record from the dataset.
+ * It holds all the information about one passenger's flight experience.
  * 
- * Data Types:
- * - String: Gender, Customer Type, Type of Travel, Class, Satisfaction
- * - Integer: ID, Age, Flight Distance, Service Ratings (0-5)
- * - Double: Departure Delay, Arrival Delay
+ * <p>
+ * It includes:
+ * <ul>
+ *   <li>Personal details (Gender, Age, Customer Type)</li>
+ *   <li>Flight details (Type, Class, Distance, Date)</li>
+ *   <li>Ratings for various services (0-5 scale)</li>
+ *   <li>Delays (in minutes)</li>
+ *   <li>Overall satisfaction level</li>
+ * </ul>
+ * </p>
+ * 
+ * @author IT221 Student
  */
 public class PassengerRecord {
     
-    // Identification
+    // --- Identification ---
+    /** The row number in the CSV file */
     private int rowIndex;
+    /** The unique ID of the passenger */
     private int id;
     
-    // Demographics (String and Integer types)
+    // --- Personal Information ---
+    /** Gender of the passenger (Male/Female) */
     private String gender;
+    /** Type of customer (Loyal/Disloyal) */
     private String customerType;
+    /** Age of the passenger */
     private int age;
     
-    // Travel Information (String and Integer types)
+    // --- Flight Information ---
+    /** Purpose of travel (Business/Personal) */
     private String typeOfTravel;
+    /** Class of travel (Business/Eco/Eco Plus) */
     private String travelClass;
+    /** Distance of the flight in miles */
     private int flightDistance;
+    /** Date of the flight (Month:Date:Year) */
+    private String flightDate;
     
-    // Service Ratings (Integer type, scale 0-5)
+    // --- Service Ratings (0 to 5) ---
     private int inflightWifiService;
     private int departureArrivalTimeConvenient;
     private int easeOfOnlineBooking;
@@ -41,17 +59,26 @@ public class PassengerRecord {
     private int inflightService;
     private int cleanliness;
     
-    // Delays (Double type)
+    // --- Delays ---
+    /** Delay in departure in minutes */
     private double departureDelayInMinutes;
+    /** Delay in arrival in minutes */
     private double arrivalDelayInMinutes;
     
-    // Satisfaction (String type)
+    // --- Outcome ---
+    /** Final satisfaction level (satisfied/neutral or dissatisfied) */
     private String satisfaction;
     
-    // Constructor
-    public PassengerRecord() {}
+    /**
+     * Default constructor.
+     * Creates an empty record.
+     */
+    public PassengerRecord() {
+    }
     
-    // Getters and Setters
+    // ================= GETTERS AND SETTERS =================
+    // These methods allow us to read (get) and write (set) the private fields.
+
     public int getRowIndex() { return rowIndex; }
     public void setRowIndex(int rowIndex) { this.rowIndex = rowIndex; }
     
@@ -76,6 +103,9 @@ public class PassengerRecord {
     public int getFlightDistance() { return flightDistance; }
     public void setFlightDistance(int flightDistance) { this.flightDistance = flightDistance; }
     
+    public String getFlightDate() { return flightDate; }
+    public void setFlightDate(String flightDate) { this.flightDate = flightDate; }
+
     public int getInflightWifiService() { return inflightWifiService; }
     public void setInflightWifiService(int inflightWifiService) { this.inflightWifiService = inflightWifiService; }
     
@@ -127,29 +157,53 @@ public class PassengerRecord {
     public String getSatisfaction() { return satisfaction; }
     public void setSatisfaction(String satisfaction) { this.satisfaction = satisfaction; }
     
+    // ================= HELPER METHODS =================
+    
     /**
-     * Check if the passenger is satisfied
-     * @return true if satisfied, false otherwise
+     * Checks if the passenger was satisfied.
+     * 
+     * @return true if satisfaction is "satisfied", false otherwise
      */
     public boolean isSatisfied() {
-        return "satisfied".equalsIgnoreCase(satisfaction);
+        if (satisfaction != null && satisfaction.equalsIgnoreCase("satisfied")) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     /**
-     * Calculate the average service rating across all rated services
-     * @return average rating (0-5 scale)
+     * Calculates the average rating given by this passenger.
+     * It adds up all 14 service ratings and divides by 14.
+     * 
+     * @return The average rating (0.0 to 5.0)
      */
     public double getAverageServiceRating() {
-        int total = inflightWifiService + departureArrivalTimeConvenient + easeOfOnlineBooking +
-                    gateLocation + foodAndDrink + onlineBoarding + seatComfort + 
-                    inflightEntertainment + onBoardService + legRoomService + 
-                    baggageHandling + checkinService + inflightService + cleanliness;
-        return total / 14.0;
+        int sum = 0;
+        sum += inflightWifiService;
+        sum += departureArrivalTimeConvenient;
+        sum += easeOfOnlineBooking;
+        sum += gateLocation;
+        sum += foodAndDrink;
+        sum += onlineBoarding;
+        sum += seatComfort;
+        sum += inflightEntertainment;
+        sum += onBoardService;
+        sum += legRoomService;
+        sum += baggageHandling;
+        sum += checkinService;
+        sum += inflightService;
+        sum += cleanliness;
+        
+        return sum / 14.0;
     }
     
+    /**
+     * Returns a string representation of the passenger record.
+     * Useful for debugging and printing.
+     */
     @Override
     public String toString() {
-        return String.format("PassengerRecord[ID=%d, Gender=%s, Age=%d, Class=%s, Satisfaction=%s]",
-                id, gender, age, travelClass, satisfaction);
+        return "Passenger #" + id + " (" + gender + ", " + age + " years old) - " + satisfaction;
     }
 }
