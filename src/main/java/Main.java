@@ -8,641 +8,332 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Main - The main entry point for the Airline Satisfaction Analysis program.
- * 
- * <p>This program reads airline passenger satisfaction data from a CSV file
- * and provides various analysis options through a menu-based interface.</p>
- * 
- * <h2>IT221 - Information Management</h2>
- * <h3>Module 1: Data Processing and Databases</h3>
- * 
- * <h2>Features:</h2>
- * <ul>
- *   <li>Load and process CSV data</li>
- *   <li>View dataset overview and statistics</li>
- *   <li>Analyze demographics (gender, age)</li>
- *   <li>Analyze flight information</li>
- *   <li>View service ratings</li>
- *   <li>Analyze satisfaction by different categories</li>
- *   <li>Search and filter records</li>
- * </ul>
- * 
- * <h2>Data Types Used:</h2>
- * <ul>
- *   <li><b>String</b> - Text data (Gender, Class, Satisfaction, Date)</li>
- *   <li><b>int</b> - Whole numbers (Age, ID, Ratings)</li>
- *   <li><b>double</b> - Decimal numbers (Delays)</li>
- * </ul>
+ * Main class for Airline Passenger Satisfaction Analysis.
+ * IT221 - Information Management, Lab Activity 0
  * 
  * @author IT221 Student
  * @version 1.0
  */
 public class Main {
     
-    /**
-     * Path to the CSV data file.
-     */
     private static final String CSV_FILE_PATH = "data/airline_satisfaction.csv";
-    
-    /**
-     * Scanner for reading user input.
-     */
     private static Scanner scanner = new Scanner(System.in);
-    
-    /**
-     * Data processor for analyzing the records.
-     */
     private static DataProcessor processor;
-    
-    /**
-     * List of all passenger records loaded from CSV.
-     */
     private static List<PassengerRecord> records;
     
-    /**
-     * Main method - the starting point of the program.
-     * 
-     * <p>This method:</p>
-     * <ol>
-     *   <li>Displays a welcome message</li>
-     *   <li>Loads the dataset from CSV</li>
-     *   <li>Shows a menu and handles user choices</li>
-     *   <li>Exits when the user chooses to quit</li>
-     * </ol>
-     * 
-     * @param args command line arguments (not used)
-     */
     public static void main(String[] args) {
-        // Show welcome message
-        System.out.println("\n========================================");
-        System.out.println("  AIRLINE PASSENGER SATISFACTION");
-        System.out.println("  DATA PROCESSING SYSTEM");
+        System.out.println("\n=================================");
+        System.out.println("  Airline Satisfaction Analysis");
         System.out.println("  IT221 - Lab Activity 0");
-        System.out.println("========================================\n");
+        System.out.println("=================================\n");
         
-        // Try to load the dataset
-        boolean loaded = loadDataset();
-        if (!loaded) {
-            System.out.println("Failed to load dataset. Exiting...");
+        if (!loadDataset()) {
+            System.out.println("Failed to load dataset. Exiting.");
             return;
         }
         
-        // Create the data processor
         processor = new DataProcessor(records);
+        System.out.println("Loaded " + processor.getTotalRecords() + " records.\n");
         
-        // Show success message
-        System.out.println("\nDataset loaded successfully!");
-        System.out.println("Total records: " + processor.getTotalRecords());
-        
-        // Main menu loop
         boolean running = true;
         while (running) {
-            displayMainMenu();
-            int choice = getIntInput("Enter your choice: ");
+            showMenu();
+            int choice = getIntInput("Choice: ");
             
-            // Handle the user's choice
-            if (choice == 1) {
-                displayDatasetOverview();
-            } else if (choice == 2) {
-                displayDemographicsMenu();
-            } else if (choice == 3) {
-                displayFlightStatisticsMenu();
-            } else if (choice == 4) {
-                displayServiceRatingsMenu();
-            } else if (choice == 5) {
-                displaySatisfactionAnalysisMenu();
-            } else if (choice == 6) {
-                displaySearchAndFilterMenu();
-            } else if (choice == 7) {
-                displayComprehensiveReport();
-            } else if (choice == 0) {
+            if (choice == 1) showOverview();
+            else if (choice == 2) showDemographics();
+            else if (choice == 3) showFlightStats();
+            else if (choice == 4) showServiceRatings();
+            else if (choice == 5) showSatisfactionAnalysis();
+            else if (choice == 6) showSearchFilter();
+            else if (choice == 7) showReport();
+            else if (choice == 0) {
                 running = false;
-                System.out.println("\n========================================");
-                System.out.println("  Thank you for using the system!");
-                System.out.println("  Goodbye!");
-                System.out.println("========================================");
-            } else {
-                System.out.println("\nInvalid choice. Please try again.");
+                System.out.println("\nGoodbye!");
             }
+            else System.out.println("Invalid choice.");
         }
-        
         scanner.close();
     }
     
-    /**
-     * Loads the dataset from the CSV file.
-     * 
-     * <p>Uses the CSVReader class to read and parse the file.</p>
-     * 
-     * @return true if loading succeeded, false otherwise
-     */
     private static boolean loadDataset() {
-        System.out.println("Loading dataset from: " + CSV_FILE_PATH);
-        System.out.print("Please wait...");
-        
+        System.out.print("Loading " + CSV_FILE_PATH + "... ");
         try {
             CSVReader reader = new CSVReader(CSV_FILE_PATH);
             records = reader.readAllRecords();
-            System.out.println(" Done!");
+            System.out.println("Done.");
             return true;
         } catch (IOException e) {
-            System.out.println("\nError loading dataset: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             return false;
         }
     }
     
-    /**
-     * Displays the main menu options.
-     */
-    private static void displayMainMenu() {
-        System.out.println("\n----------------------------------------");
-        System.out.println("              MAIN MENU");
-        System.out.println("----------------------------------------");
-        System.out.println("  1. Dataset Overview");
-        System.out.println("  2. Demographics Analysis");
-        System.out.println("  3. Flight Statistics");
-        System.out.println("  4. Service Ratings Analysis");
-        System.out.println("  5. Satisfaction Analysis");
-        System.out.println("  6. Search & Filter Records");
-        System.out.println("  7. Generate Comprehensive Report");
-        System.out.println("  0. Exit");
-        System.out.println("----------------------------------------");
+    private static void showMenu() {
+        System.out.println("\n--- MAIN MENU ---");
+        System.out.println("1. Dataset Overview");
+        System.out.println("2. Demographics");
+        System.out.println("3. Flight Statistics");
+        System.out.println("4. Service Ratings");
+        System.out.println("5. Satisfaction Analysis");
+        System.out.println("6. Search & Filter");
+        System.out.println("7. Full Report");
+        System.out.println("0. Exit");
     }
     
-    /**
-     * Shows an overview of the dataset.
-     */
-    private static void displayDatasetOverview() {
-        System.out.println("\n========== DATASET OVERVIEW ==========");
-        System.out.println("  Total Records: " + processor.getTotalRecords());
+    private static void showOverview() {
+        System.out.println("\n--- DATASET OVERVIEW ---");
+        System.out.println("Total Records: " + processor.getTotalRecords());
         
-        System.out.println("\n  Data Columns:");
-        System.out.println("  - ID (integer)");
-        System.out.println("  - Gender (string)");
-        System.out.println("  - Customer Type (string)");
-        System.out.println("  - Age (integer)");
-        System.out.println("  - Type of Travel (string)");
-        System.out.println("  - Class (string)");
-        System.out.println("  - Flight Distance (integer)");
-        System.out.println("  - Service Ratings (integers, 0-5)");
-        System.out.println("  - Delays (decimal/double)");
-        System.out.println("  - Satisfaction (string)");
-        System.out.println("  - Date (string, month:date:year)");
-        
-        // Quick satisfaction stats
-        Map<String, Long> satisfaction = processor.getSatisfactionDistribution();
-        long satisfied = 0;
-        if (satisfaction.containsKey("satisfied")) {
-            satisfied = satisfaction.get("satisfied");
-        }
+        Map<String, Long> sat = processor.getSatisfactionDistribution();
+        long satisfied = sat.getOrDefault("satisfied", 0L);
         long total = processor.getTotalRecords();
         
-        System.out.println("\n  Quick Statistics:");
-        System.out.println("  - Satisfied: " + satisfied + " (" + 
-                          String.format("%.1f", satisfied * 100.0 / total) + "%)");
-        System.out.println("  - Dissatisfied: " + (total - satisfied) + " (" + 
-                          String.format("%.1f", (total - satisfied) * 100.0 / total) + "%)");
+        System.out.println("Satisfied: " + satisfied + " (" + pct(satisfied, total) + ")");
+        System.out.println("Dissatisfied: " + (total - satisfied) + " (" + pct(total - satisfied, total) + ")");
         
-        pressEnterToContinue();
+        pause();
     }
     
-    /**
-     * Shows the demographics sub-menu.
-     */
-    private static void displayDemographicsMenu() {
-        boolean inSubmenu = true;
-        while (inSubmenu) {
-            System.out.println("\n--- DEMOGRAPHICS ANALYSIS ---");
-            System.out.println("  1. Gender Distribution");
-            System.out.println("  2. Customer Type Distribution");
-            System.out.println("  3. Age Statistics");
-            System.out.println("  4. Age Group Distribution");
-            System.out.println("  0. Back to Main Menu");
+    private static void showDemographics() {
+        boolean sub = true;
+        while (sub) {
+            System.out.println("\n--- DEMOGRAPHICS ---");
+            System.out.println("1. Gender");
+            System.out.println("2. Customer Type");
+            System.out.println("3. Age Stats");
+            System.out.println("4. Age Groups");
+            System.out.println("0. Back");
             
-            int choice = getIntInput("Enter your choice: ");
-            
-            if (choice == 1) {
-                displayDistribution("GENDER DISTRIBUTION", processor.getGenderDistribution());
-            } else if (choice == 2) {
-                displayDistribution("CUSTOMER TYPE DISTRIBUTION", processor.getCustomerTypeDistribution());
-            } else if (choice == 3) {
-                displayStatistics("AGE STATISTICS", processor.getAgeStatistics());
-            } else if (choice == 4) {
-                displayDistribution("AGE GROUP DISTRIBUTION", processor.getAgeGroupDistribution());
-            } else if (choice == 0) {
-                inSubmenu = false;
-            } else {
-                System.out.println("\nInvalid choice. Please try again.");
-            }
+            int c = getIntInput("Choice: ");
+            if (c == 1) showDistribution("Gender", processor.getGenderDistribution());
+            else if (c == 2) showDistribution("Customer Type", processor.getCustomerTypeDistribution());
+            else if (c == 3) showStats("Age", processor.getAgeStatistics());
+            else if (c == 4) showDistribution("Age Groups", processor.getAgeGroupDistribution());
+            else if (c == 0) sub = false;
         }
     }
     
-    /**
-     * Shows the flight statistics sub-menu.
-     */
-    private static void displayFlightStatisticsMenu() {
-        boolean inSubmenu = true;
-        while (inSubmenu) {
+    private static void showFlightStats() {
+        boolean sub = true;
+        while (sub) {
             System.out.println("\n--- FLIGHT STATISTICS ---");
-            System.out.println("  1. Travel Type Distribution");
-            System.out.println("  2. Travel Class Distribution");
-            System.out.println("  3. Flight Distance Statistics");
-            System.out.println("  4. Flight Distance Categories");
-            System.out.println("  5. Departure Delay Statistics");
-            System.out.println("  6. Arrival Delay Statistics");
-            System.out.println("  0. Back to Main Menu");
+            System.out.println("1. Travel Type");
+            System.out.println("2. Travel Class");
+            System.out.println("3. Distance Stats");
+            System.out.println("4. Distance Categories");
+            System.out.println("5. Departure Delays");
+            System.out.println("6. Arrival Delays");
+            System.out.println("0. Back");
             
-            int choice = getIntInput("Enter your choice: ");
-            
-            if (choice == 1) {
-                displayDistribution("TRAVEL TYPE DISTRIBUTION", processor.getTravelTypeDistribution());
-            } else if (choice == 2) {
-                displayDistribution("TRAVEL CLASS DISTRIBUTION", processor.getTravelClassDistribution());
-            } else if (choice == 3) {
-                displayStatistics("FLIGHT DISTANCE STATISTICS", processor.getFlightDistanceStatistics());
-            } else if (choice == 4) {
-                displayDistribution("FLIGHT DISTANCE CATEGORIES", processor.getFlightDistanceDistribution());
-            } else if (choice == 5) {
-                displayStatistics("DEPARTURE DELAY STATISTICS", processor.getDepartureDelayStatistics());
-            } else if (choice == 6) {
-                displayStatistics("ARRIVAL DELAY STATISTICS", processor.getArrivalDelayStatistics());
-            } else if (choice == 0) {
-                inSubmenu = false;
-            } else {
-                System.out.println("\nInvalid choice. Please try again.");
-            }
+            int c = getIntInput("Choice: ");
+            if (c == 1) showDistribution("Travel Type", processor.getTravelTypeDistribution());
+            else if (c == 2) showDistribution("Travel Class", processor.getTravelClassDistribution());
+            else if (c == 3) showStats("Distance", processor.getFlightDistanceStatistics());
+            else if (c == 4) showDistribution("Distance", processor.getFlightDistanceDistribution());
+            else if (c == 5) showStats("Departure Delay", processor.getDepartureDelayStatistics());
+            else if (c == 6) showStats("Arrival Delay", processor.getArrivalDelayStatistics());
+            else if (c == 0) sub = false;
         }
     }
     
-    /**
-     * Shows the service ratings sub-menu.
-     */
-    private static void displayServiceRatingsMenu() {
-        boolean inSubmenu = true;
-        while (inSubmenu) {
-            System.out.println("\n--- SERVICE RATINGS ANALYSIS ---");
-            System.out.println("  1. All Service Average Ratings");
-            System.out.println("  2. Top & Bottom Rated Services");
-            System.out.println("  0. Back to Main Menu");
+    private static void showServiceRatings() {
+        boolean sub = true;
+        while (sub) {
+            System.out.println("\n--- SERVICE RATINGS ---");
+            System.out.println("1. All Ratings");
+            System.out.println("2. Top & Bottom");
+            System.out.println("0. Back");
             
-            int choice = getIntInput("Enter your choice: ");
-            
-            if (choice == 1) {
-                displayServiceRatings();
-            } else if (choice == 2) {
-                System.out.println("\n===== SERVICE RANKING SUMMARY =====");
+            int c = getIntInput("Choice: ");
+            if (c == 1) {
+                System.out.println("\n--- Service Ratings (0-5) ---");
+                Map<String, Double> ratings = processor.getAverageServiceRatings();
+                for (String s : ratings.keySet()) {
+                    System.out.printf("%-20s: %.2f\n", s, ratings.get(s));
+                }
+                pause();
+            }
+            else if (c == 2) {
+                System.out.println("\n--- Service Ranking ---");
                 System.out.println(processor.getServiceRankingSummary());
-                pressEnterToContinue();
-            } else if (choice == 0) {
-                inSubmenu = false;
-            } else {
-                System.out.println("\nInvalid choice. Please try again.");
+                pause();
             }
+            else if (c == 0) sub = false;
         }
     }
     
-    /**
-     * Shows the satisfaction analysis sub-menu.
-     */
-    private static void displaySatisfactionAnalysisMenu() {
-        boolean inSubmenu = true;
-        while (inSubmenu) {
+    private static void showSatisfactionAnalysis() {
+        boolean sub = true;
+        while (sub) {
             System.out.println("\n--- SATISFACTION ANALYSIS ---");
-            System.out.println("  1. Overall Satisfaction Distribution");
-            System.out.println("  2. Satisfaction by Travel Class");
-            System.out.println("  3. Satisfaction by Customer Type");
-            System.out.println("  4. Satisfaction by Travel Type");
-            System.out.println("  5. Satisfaction by Age Group");
-            System.out.println("  0. Back to Main Menu");
+            System.out.println("1. Overall");
+            System.out.println("2. By Class");
+            System.out.println("3. By Customer Type");
+            System.out.println("4. By Travel Type");
+            System.out.println("5. By Age Group");
+            System.out.println("0. Back");
             
-            int choice = getIntInput("Enter your choice: ");
-            
-            if (choice == 1) {
-                displayDistribution("SATISFACTION DISTRIBUTION", processor.getSatisfactionDistribution());
-            } else if (choice == 2) {
-                displaySatisfactionRates("SATISFACTION BY TRAVEL CLASS", processor.getSatisfactionRateByClass());
-            } else if (choice == 3) {
-                displaySatisfactionRates("SATISFACTION BY CUSTOMER TYPE", processor.getSatisfactionRateByCustomerType());
-            } else if (choice == 4) {
-                displaySatisfactionRates("SATISFACTION BY TRAVEL TYPE", processor.getSatisfactionRateByTravelType());
-            } else if (choice == 5) {
-                displaySatisfactionRates("SATISFACTION BY AGE GROUP", processor.getSatisfactionRateByAgeGroup());
-            } else if (choice == 0) {
-                inSubmenu = false;
-            } else {
-                System.out.println("\nInvalid choice. Please try again.");
-            }
+            int c = getIntInput("Choice: ");
+            if (c == 1) showDistribution("Satisfaction", processor.getSatisfactionDistribution());
+            else if (c == 2) showRates("By Class", processor.getSatisfactionRateByClass());
+            else if (c == 3) showRates("By Customer Type", processor.getSatisfactionRateByCustomerType());
+            else if (c == 4) showRates("By Travel Type", processor.getSatisfactionRateByTravelType());
+            else if (c == 5) showRates("By Age Group", processor.getSatisfactionRateByAgeGroup());
+            else if (c == 0) sub = false;
         }
     }
     
-    /**
-     * Shows the search and filter sub-menu.
-     */
-    private static void displaySearchAndFilterMenu() {
-        boolean inSubmenu = true;
-        while (inSubmenu) {
+    private static void showSearchFilter() {
+        boolean sub = true;
+        while (sub) {
             System.out.println("\n--- SEARCH & FILTER ---");
-            System.out.println("  1. Search by Passenger ID");
-            System.out.println("  2. Filter by Travel Class");
-            System.out.println("  3. Filter by Age Range");
-            System.out.println("  4. View Sample Records (First 10)");
-            System.out.println("  0. Back to Main Menu");
+            System.out.println("1. Search by ID");
+            System.out.println("2. Filter by Class");
+            System.out.println("3. Filter by Age");
+            System.out.println("4. Sample Records");
+            System.out.println("0. Back");
             
-            int choice = getIntInput("Enter your choice: ");
-            
-            if (choice == 1) {
-                searchById();
-            } else if (choice == 2) {
-                filterByClass();
-            } else if (choice == 3) {
-                filterByAgeRange();
-            } else if (choice == 4) {
-                displaySampleRecords();
-            } else if (choice == 0) {
-                inSubmenu = false;
-            } else {
-                System.out.println("\nInvalid choice. Please try again.");
-            }
+            int c = getIntInput("Choice: ");
+            if (c == 1) searchById();
+            else if (c == 2) filterByClass();
+            else if (c == 3) filterByAge();
+            else if (c == 4) showSample();
+            else if (c == 0) sub = false;
         }
     }
     
-    /**
-     * Searches for a passenger by ID.
-     */
     private static void searchById() {
-        int id = getIntInput("Enter Passenger ID to search: ");
-        PassengerRecord result = processor.searchById(id);
+        int id = getIntInput("Enter ID: ");
+        PassengerRecord r = processor.searchById(id);
         
-        System.out.println("\n===== SEARCH RESULT =====");
-        if (result != null) {
-            System.out.println("  Passenger Found!");
-            System.out.println("  ----------------------");
-            System.out.println("  ID: " + result.getId());
-            System.out.println("  Gender: " + result.getGender());
-            System.out.println("  Age: " + result.getAge());
-            System.out.println("  Customer Type: " + result.getCustomerType());
-            System.out.println("  Travel Type: " + result.getTypeOfTravel());
-            System.out.println("  Travel Class: " + result.getTravelClass());
-            System.out.println("  Flight Distance: " + result.getFlightDistance() + " miles");
-            System.out.println("  Departure Delay: " + result.getDepartureDelayInMinutes() + " min");
-            System.out.println("  Arrival Delay: " + result.getArrivalDelayInMinutes() + " min");
-            System.out.println("  Avg Service Rating: " + 
-                              String.format("%.2f", result.getAverageServiceRating()) + "/5.00");
-            System.out.println("  Satisfaction: " + result.getSatisfaction());
-            System.out.println("  Date: " + result.getDate());
+        System.out.println("\n--- Search Result ---");
+        if (r != null) {
+            System.out.println("Found: ID=" + r.getId());
+            System.out.println("  Gender: " + r.getGender());
+            System.out.println("  Age: " + r.getAge());
+            System.out.println("  Type: " + r.getCustomerType());
+            System.out.println("  Class: " + r.getTravelClass());
+            System.out.println("  Distance: " + r.getFlightDistance() + " mi");
+            System.out.println("  Satisfaction: " + r.getSatisfaction());
+            System.out.println("  Date: " + r.getDate());
         } else {
-            System.out.println("  No passenger found with ID: " + id);
+            System.out.println("Not found.");
         }
-        
-        pressEnterToContinue();
+        pause();
     }
     
-    /**
-     * Filters records by travel class.
-     */
     private static void filterByClass() {
-        System.out.println("\nAvailable Classes: Business, Eco, Eco Plus");
-        System.out.print("Enter travel class to filter: ");
-        String travelClass = scanner.nextLine().trim();
+        System.out.print("Enter class (Business/Eco/Eco Plus): ");
+        String cls = scanner.nextLine().trim();
+        List<PassengerRecord> filtered = processor.filterByClass(cls);
         
-        List<PassengerRecord> filtered = processor.filterByClass(travelClass);
-        
-        System.out.println("\n===== FILTER RESULTS =====");
-        System.out.println("  Records in '" + travelClass + "' class: " + filtered.size());
-        
-        if (filtered.size() > 0) {
-            // Count satisfied passengers
-            int satisfied = 0;
-            int totalAge = 0;
-            int totalDistance = 0;
-            
-            for (PassengerRecord r : filtered) {
-                if (r.isSatisfied()) {
-                    satisfied++;
-                }
-                totalAge += r.getAge();
-                totalDistance += r.getFlightDistance();
-            }
-            
-            double satPercent = (satisfied * 100.0) / filtered.size();
-            double avgAge = (double) totalAge / filtered.size();
-            double avgDistance = (double) totalDistance / filtered.size();
-            
-            System.out.println("  Satisfied: " + satisfied + " (" + 
-                              String.format("%.1f", satPercent) + "%)");
-            System.out.println("  Dissatisfied: " + (filtered.size() - satisfied) + " (" + 
-                              String.format("%.1f", 100 - satPercent) + "%)");
-            System.out.println("  Average Age: " + String.format("%.1f", avgAge) + " years");
-            System.out.println("  Average Flight Distance: " + String.format("%.1f", avgDistance) + " miles");
-        }
-        
-        pressEnterToContinue();
-    }
-    
-    /**
-     * Filters records by age range.
-     */
-    private static void filterByAgeRange() {
-        int minAge = getIntInput("Enter minimum age: ");
-        int maxAge = getIntInput("Enter maximum age: ");
-        
-        List<PassengerRecord> filtered = processor.filterByAgeRange(minAge, maxAge);
-        
-        System.out.println("\n===== FILTER RESULTS =====");
-        System.out.println("  Passengers aged " + minAge + "-" + maxAge + ": " + filtered.size());
+        System.out.println("\n--- Filter Result ---");
+        System.out.println("Class: " + cls);
+        System.out.println("Records found: " + filtered.size());
         
         if (filtered.size() > 0) {
-            // Count satisfied
-            int satisfied = 0;
+            int sat = 0;
             for (PassengerRecord r : filtered) {
-                if (r.isSatisfied()) {
-                    satisfied++;
-                }
+                if (r.isSatisfied()) sat++;
             }
-            
-            System.out.println("  Satisfied: " + satisfied + " (" + 
-                              String.format("%.1f", satisfied * 100.0 / filtered.size()) + "%)");
-            
-            // Count by class
-            System.out.println("\n  Class Distribution:");
-            Map<String, Integer> classCounts = new java.util.HashMap<>();
-            for (PassengerRecord r : filtered) {
-                String cls = r.getTravelClass();
-                if (classCounts.containsKey(cls)) {
-                    classCounts.put(cls, classCounts.get(cls) + 1);
-                } else {
-                    classCounts.put(cls, 1);
-                }
-            }
-            for (String cls : classCounts.keySet()) {
-                System.out.println("    - " + cls + ": " + classCounts.get(cls));
-            }
+            System.out.println("Satisfied: " + sat + " (" + pct(sat, filtered.size()) + ")");
         }
-        
-        pressEnterToContinue();
+        pause();
     }
     
-    /**
-     * Displays a sample of records.
-     */
-    private static void displaySampleRecords() {
-        System.out.println("\n===== SAMPLE RECORDS (First 10) =====");
-        System.out.println("------------------------------------------------------------------------------");
-        System.out.printf("%-8s %-8s %-5s %-12s %-10s %-12s %-12s\n",
-                "ID", "Gender", "Age", "Class", "Distance", "Satisfied", "Date");
-        System.out.println("------------------------------------------------------------------------------");
+    private static void filterByAge() {
+        int min = getIntInput("Min age: ");
+        int max = getIntInput("Max age: ");
+        List<PassengerRecord> filtered = processor.filterByAgeRange(min, max);
         
-        // Show first 10 records
+        System.out.println("\n--- Filter Result ---");
+        System.out.println("Age range: " + min + "-" + max);
+        System.out.println("Records found: " + filtered.size());
+        
+        if (filtered.size() > 0) {
+            int sat = 0;
+            for (PassengerRecord r : filtered) {
+                if (r.isSatisfied()) sat++;
+            }
+            System.out.println("Satisfied: " + sat + " (" + pct(sat, filtered.size()) + ")");
+        }
+        pause();
+    }
+    
+    private static void showSample() {
+        System.out.println("\n--- Sample Records (First 10) ---");
+        System.out.printf("%-8s %-8s %-4s %-10s %-8s %-12s\n", "ID", "Gender", "Age", "Class", "Date", "Satisfied");
+        
         int count = 0;
         for (PassengerRecord r : records) {
             if (count >= 10) break;
-            
-            System.out.printf("%-8d %-8s %-5d %-12s %-10d %-12s %-12s\n",
-                    r.getId(), 
-                    r.getGender(), 
-                    r.getAge(),
-                    r.getTravelClass(), 
-                    r.getFlightDistance(), 
-                    r.getSatisfaction(),
-                    r.getDate());
+            System.out.printf("%-8d %-8s %-4d %-10s %-8s %-12s\n",
+                r.getId(), r.getGender(), r.getAge(), 
+                r.getTravelClass(), r.getDate(), r.getSatisfaction());
             count++;
         }
-        
-        System.out.println("------------------------------------------------------------------------------");
-        pressEnterToContinue();
+        pause();
     }
     
-    /**
-     * Displays the comprehensive report.
-     */
-    private static void displayComprehensiveReport() {
+    private static void showReport() {
         System.out.println(processor.generateComprehensiveSummary());
-        pressEnterToContinue();
+        pause();
     }
     
-    // ================================================================
-    // HELPER METHODS
-    // ================================================================
+    // Helper methods
     
-    /**
-     * Displays a distribution (counts by category).
-     * 
-     * @param title the title to display
-     * @param distribution the data to display
-     */
-    private static void displayDistribution(String title, Map<String, Long> distribution) {
-        System.out.println("\n===== " + title + " =====");
-        
-        // Calculate total
+    private static void showDistribution(String title, Map<String, Long> data) {
+        System.out.println("\n--- " + title + " ---");
         long total = 0;
-        for (Long value : distribution.values()) {
-            total += value;
-        }
+        for (Long v : data.values()) total += v;
         
-        // Display each category
-        for (String key : distribution.keySet()) {
-            long value = distribution.get(key);
-            double percentage = (value * 100.0) / total;
-            System.out.printf("  %-25s: %7d (%5.1f%%)\n", key, value, percentage);
+        for (String k : data.keySet()) {
+            long v = data.get(k);
+            System.out.printf("%-25s: %6d (%s)\n", k, v, pct(v, total));
         }
-        
-        System.out.println("\n  Total: " + total);
-        pressEnterToContinue();
+        System.out.println("Total: " + total);
+        pause();
     }
     
-    /**
-     * Displays statistics (numeric values).
-     * 
-     * @param title the title to display
-     * @param stats the statistics to display
-     */
-    private static void displayStatistics(String title, Map<String, Double> stats) {
-        System.out.println("\n===== " + title + " =====");
-        
-        for (String key : stats.keySet()) {
-            double value = stats.get(key);
-            
-            // Format differently based on the type of stat
-            if (key.contains("Count") || key.contains("Flights") || key.contains("Total")) {
-                System.out.printf("  %-25s: %.0f\n", key, value);
+    private static void showStats(String title, Map<String, Double> data) {
+        System.out.println("\n--- " + title + " ---");
+        for (String k : data.keySet()) {
+            double v = data.get(k);
+            if (k.contains("Count") || k.contains("Flights") || k.contains("Total")) {
+                System.out.printf("%-25s: %.0f\n", k, v);
             } else {
-                System.out.printf("  %-25s: %.2f\n", key, value);
+                System.out.printf("%-25s: %.2f\n", k, v);
             }
         }
-        
-        pressEnterToContinue();
+        pause();
     }
     
-    /**
-     * Displays all service ratings.
-     */
-    private static void displayServiceRatings() {
-        System.out.println("\n===== ALL SERVICE RATINGS (Average out of 5.00) =====");
-        
-        Map<String, Double> ratings = processor.getAverageServiceRatings();
-        
-        for (String service : ratings.keySet()) {
-            double rating = ratings.get(service);
-            System.out.printf("  %-35s: %.2f\n", service, rating);
+    private static void showRates(String title, Map<String, Double> data) {
+        System.out.println("\n--- Satisfaction " + title + " ---");
+        for (String k : data.keySet()) {
+            System.out.printf("%-20s: %.1f%% satisfied\n", k, data.get(k));
         }
-        
-        // Calculate overall average
-        double total = 0;
-        for (Double rating : ratings.values()) {
-            total += rating;
-        }
-        double overall = total / ratings.size();
-        
-        System.out.println("\n  -----------------------------------");
-        System.out.printf("  %-35s: %.2f\n", "OVERALL AVERAGE", overall);
-        
-        pressEnterToContinue();
+        pause();
     }
     
-    /**
-     * Displays satisfaction rates by category.
-     * 
-     * @param title the title to display
-     * @param rates the satisfaction rates
-     */
-    private static void displaySatisfactionRates(String title, Map<String, Double> rates) {
-        System.out.println("\n===== " + title + " =====");
-        
-        for (String category : rates.keySet()) {
-            double rate = rates.get(category);
-            System.out.printf("  %-20s: %5.1f%% satisfied\n", category, rate);
-        }
-        
-        pressEnterToContinue();
+    private static String pct(long val, long total) {
+        return String.format("%.1f%%", val * 100.0 / total);
     }
     
-    /**
-     * Gets an integer input from the user.
-     * 
-     * <p>Keeps asking until a valid number is entered.</p>
-     * 
-     * @param prompt the message to display
-     * @return the integer entered by the user
-     */
     private static int getIntInput(String prompt) {
         System.out.print(prompt);
-        
-        // Keep trying until we get a valid number
         while (!scanner.hasNextInt()) {
-            System.out.print("Please enter a valid number: ");
-            scanner.next();  // Discard invalid input
+            System.out.print("Enter a number: ");
+            scanner.next();
         }
-        
-        int value = scanner.nextInt();
-        scanner.nextLine();  // Clear the newline character
-        return value;
+        int val = scanner.nextInt();
+        scanner.nextLine();
+        return val;
     }
     
-    /**
-     * Waits for the user to press Enter.
-     */
-    private static void pressEnterToContinue() {
-        System.out.print("\nPress Enter to continue...");
+    private static void pause() {
+        System.out.print("\nPress Enter...");
         scanner.nextLine();
     }
 }
