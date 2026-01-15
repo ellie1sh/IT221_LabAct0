@@ -1,169 +1,362 @@
 package processor;
 
 import model.PassengerRecord;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Data processing class for analyzing airline passenger satisfaction data.
- * Provides various statistical analysis and filtering capabilities.
+ * DataProcessor - Processes and analyzes airline passenger data.
+ * 
+ * <p>This class contains methods to analyze passenger satisfaction data.
+ * It can count, filter, and calculate statistics from the dataset.</p>
+ * 
+ * <h2>What is Data Processing?</h2>
+ * <p>Data processing means taking raw data and turning it into useful information.
+ * For example, counting how many passengers are satisfied vs dissatisfied.</p>
+ * 
+ * <h2>Common Operations:</h2>
+ * <ul>
+ *   <li><b>Counting</b> - How many records match a condition?</li>
+ *   <li><b>Filtering</b> - Get only records that match a condition</li>
+ *   <li><b>Calculating</b> - Find averages, min, max values</li>
+ *   <li><b>Grouping</b> - Organize records by category</li>
+ * </ul>
+ * 
+ * @author IT221 Student
+ * @version 1.0
  */
 public class DataProcessor {
     
+    /**
+     * The list of all passenger records to process.
+     */
     private List<PassengerRecord> records;
     
+    /**
+     * Creates a new DataProcessor with the given records.
+     * 
+     * @param records the list of passenger records to process
+     */
     public DataProcessor(List<PassengerRecord> records) {
         this.records = records;
     }
     
     /**
-     * Get total number of records
-     * @return Record count
+     * Gets the total number of records.
+     * 
+     * @return the total count of records
      */
     public int getTotalRecords() {
         return records.size();
     }
     
-    // ==================== BASIC STATISTICS ====================
+    // ================================================================
+    // DISTRIBUTION METHODS (Counting records by category)
+    // ================================================================
     
     /**
-     * Get gender distribution
-     * @return Map of gender to count
+     * Counts passengers by gender.
+     * 
+     * <p>This method loops through all records and counts how many
+     * are Male and how many are Female.</p>
+     * 
+     * @return a Map where key is gender and value is count
      */
     public Map<String, Long> getGenderDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getGender, Collectors.counting()));
+        // Create a map to store counts
+        Map<String, Long> counts = new HashMap<>();
+        
+        // Loop through each record
+        for (PassengerRecord record : records) {
+            String gender = record.getGender();
+            
+            // If this gender is already in the map, add 1
+            // If not, start at 1
+            if (counts.containsKey(gender)) {
+                counts.put(gender, counts.get(gender) + 1);
+            } else {
+                counts.put(gender, 1L);
+            }
+        }
+        
+        return counts;
     }
     
     /**
-     * Get customer type distribution
-     * @return Map of customer type to count
+     * Counts passengers by customer type (Loyal vs Disloyal).
+     * 
+     * @return a Map where key is customer type and value is count
      */
     public Map<String, Long> getCustomerTypeDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getCustomerType, Collectors.counting()));
+        Map<String, Long> counts = new HashMap<>();
+        
+        for (PassengerRecord record : records) {
+            String type = record.getCustomerType();
+            
+            if (counts.containsKey(type)) {
+                counts.put(type, counts.get(type) + 1);
+            } else {
+                counts.put(type, 1L);
+            }
+        }
+        
+        return counts;
     }
     
     /**
-     * Get travel class distribution
-     * @return Map of travel class to count
+     * Counts passengers by travel class (Business, Eco, Eco Plus).
+     * 
+     * @return a Map where key is class and value is count
      */
     public Map<String, Long> getTravelClassDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getTravelClass, Collectors.counting()));
+        Map<String, Long> counts = new HashMap<>();
+        
+        for (PassengerRecord record : records) {
+            String travelClass = record.getTravelClass();
+            
+            if (counts.containsKey(travelClass)) {
+                counts.put(travelClass, counts.get(travelClass) + 1);
+            } else {
+                counts.put(travelClass, 1L);
+            }
+        }
+        
+        return counts;
     }
     
     /**
-     * Get travel type distribution
-     * @return Map of travel type to count
+     * Counts passengers by type of travel (Business vs Personal).
+     * 
+     * @return a Map where key is travel type and value is count
      */
     public Map<String, Long> getTravelTypeDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getTypeOfTravel, Collectors.counting()));
+        Map<String, Long> counts = new HashMap<>();
+        
+        for (PassengerRecord record : records) {
+            String type = record.getTypeOfTravel();
+            
+            if (counts.containsKey(type)) {
+                counts.put(type, counts.get(type) + 1);
+            } else {
+                counts.put(type, 1L);
+            }
+        }
+        
+        return counts;
     }
     
     /**
-     * Get satisfaction distribution
-     * @return Map of satisfaction level to count
+     * Counts passengers by satisfaction level.
+     * 
+     * @return a Map where key is satisfaction and value is count
      */
     public Map<String, Long> getSatisfactionDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getSatisfaction, Collectors.counting()));
+        Map<String, Long> counts = new HashMap<>();
+        
+        for (PassengerRecord record : records) {
+            String satisfaction = record.getSatisfaction();
+            
+            if (counts.containsKey(satisfaction)) {
+                counts.put(satisfaction, counts.get(satisfaction) + 1);
+            } else {
+                counts.put(satisfaction, 1L);
+            }
+        }
+        
+        return counts;
     }
     
-    // ==================== AGE STATISTICS ====================
+    // ================================================================
+    // AGE STATISTICS
+    // ================================================================
     
     /**
-     * Get age statistics
-     * @return Map containing min, max, average age
+     * Calculates age statistics (min, max, average).
+     * 
+     * <p>This shows how to find minimum, maximum, and average values
+     * using simple loops.</p>
+     * 
+     * @return a Map with age statistics
      */
     public Map<String, Double> getAgeStatistics() {
-        Map<String, Double> stats = new LinkedHashMap<>();
+        Map<String, Double> stats = new HashMap<>();
         
-        IntSummaryStatistics ageStats = records.stream()
-                .mapToInt(PassengerRecord::getAge)
-                .summaryStatistics();
+        // Initialize values
+        int minAge = Integer.MAX_VALUE;  // Start with largest possible
+        int maxAge = Integer.MIN_VALUE;  // Start with smallest possible
+        int totalAge = 0;
         
-        stats.put("Minimum Age", (double) ageStats.getMin());
-        stats.put("Maximum Age", (double) ageStats.getMax());
-        stats.put("Average Age", ageStats.getAverage());
+        // Loop through all records to find min, max, and total
+        for (PassengerRecord record : records) {
+            int age = record.getAge();
+            
+            // Check if this is the new minimum
+            if (age < minAge) {
+                minAge = age;
+            }
+            
+            // Check if this is the new maximum
+            if (age > maxAge) {
+                maxAge = age;
+            }
+            
+            // Add to total for average calculation
+            totalAge = totalAge + age;
+        }
+        
+        // Calculate average (total divided by count)
+        double averageAge = (double) totalAge / records.size();
+        
+        // Store results in the map
+        stats.put("Minimum Age", (double) minAge);
+        stats.put("Maximum Age", (double) maxAge);
+        stats.put("Average Age", averageAge);
         
         return stats;
     }
     
     /**
-     * Get age group distribution
-     * @return Map of age group to count
+     * Groups passengers by age range.
+     * 
+     * <p>Age groups: Under 18, 18-29, 30-44, 45-59, 60+</p>
+     * 
+     * @return a Map where key is age group and value is count
      */
     public Map<String, Long> getAgeGroupDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(r -> {
-                    int age = r.getAge();
-                    if (age < 18) return "Under 18";
-                    else if (age < 30) return "18-29";
-                    else if (age < 45) return "30-44";
-                    else if (age < 60) return "45-59";
-                    else return "60+";
-                }, Collectors.counting()));
+        Map<String, Long> counts = new HashMap<>();
+        
+        for (PassengerRecord record : records) {
+            int age = record.getAge();
+            String ageGroup;
+            
+            // Determine which age group this person belongs to
+            if (age < 18) {
+                ageGroup = "Under 18";
+            } else if (age < 30) {
+                ageGroup = "18-29";
+            } else if (age < 45) {
+                ageGroup = "30-44";
+            } else if (age < 60) {
+                ageGroup = "45-59";
+            } else {
+                ageGroup = "60+";
+            }
+            
+            // Add to count
+            if (counts.containsKey(ageGroup)) {
+                counts.put(ageGroup, counts.get(ageGroup) + 1);
+            } else {
+                counts.put(ageGroup, 1L);
+            }
+        }
+        
+        return counts;
     }
     
-    // ==================== FLIGHT STATISTICS ====================
+    // ================================================================
+    // FLIGHT STATISTICS
+    // ================================================================
     
     /**
-     * Get flight distance statistics
-     * @return Map containing min, max, average distance
+     * Calculates flight distance statistics.
+     * 
+     * @return a Map with distance statistics
      */
     public Map<String, Double> getFlightDistanceStatistics() {
-        Map<String, Double> stats = new LinkedHashMap<>();
+        Map<String, Double> stats = new HashMap<>();
         
-        IntSummaryStatistics distStats = records.stream()
-                .mapToInt(PassengerRecord::getFlightDistance)
-                .summaryStatistics();
+        int minDist = Integer.MAX_VALUE;
+        int maxDist = Integer.MIN_VALUE;
+        long totalDist = 0;
         
-        stats.put("Minimum Distance", (double) distStats.getMin());
-        stats.put("Maximum Distance", (double) distStats.getMax());
-        stats.put("Average Distance", distStats.getAverage());
-        stats.put("Total Flights", (double) distStats.getCount());
+        for (PassengerRecord record : records) {
+            int dist = record.getFlightDistance();
+            
+            if (dist < minDist) minDist = dist;
+            if (dist > maxDist) maxDist = dist;
+            totalDist = totalDist + dist;
+        }
+        
+        double avgDist = (double) totalDist / records.size();
+        
+        stats.put("Minimum Distance", (double) minDist);
+        stats.put("Maximum Distance", (double) maxDist);
+        stats.put("Average Distance", avgDist);
+        stats.put("Total Flights", (double) records.size());
         
         return stats;
     }
     
     /**
-     * Get flight distance category distribution
-     * @return Map of distance category to count
+     * Groups flights by distance category.
+     * 
+     * <p>Categories: Short, Medium, Long, Very Long</p>
+     * 
+     * @return a Map where key is category and value is count
      */
     public Map<String, Long> getFlightDistanceDistribution() {
-        return records.stream()
-                .collect(Collectors.groupingBy(r -> {
-                    int dist = r.getFlightDistance();
-                    if (dist < 500) return "Short (<500 mi)";
-                    else if (dist < 1500) return "Medium (500-1500 mi)";
-                    else if (dist < 3000) return "Long (1500-3000 mi)";
-                    else return "Very Long (3000+ mi)";
-                }, Collectors.counting()));
+        Map<String, Long> counts = new HashMap<>();
+        
+        for (PassengerRecord record : records) {
+            int dist = record.getFlightDistance();
+            String category;
+            
+            if (dist < 500) {
+                category = "Short (<500 mi)";
+            } else if (dist < 1500) {
+                category = "Medium (500-1500 mi)";
+            } else if (dist < 3000) {
+                category = "Long (1500-3000 mi)";
+            } else {
+                category = "Very Long (3000+ mi)";
+            }
+            
+            if (counts.containsKey(category)) {
+                counts.put(category, counts.get(category) + 1);
+            } else {
+                counts.put(category, 1L);
+            }
+        }
+        
+        return counts;
     }
     
-    // ==================== DELAY STATISTICS ====================
+    // ================================================================
+    // DELAY STATISTICS
+    // ================================================================
     
     /**
-     * Get departure delay statistics
-     * @return Map containing min, max, average delay
+     * Calculates departure delay statistics.
+     * 
+     * @return a Map with delay statistics
      */
     public Map<String, Double> getDepartureDelayStatistics() {
-        Map<String, Double> stats = new LinkedHashMap<>();
+        Map<String, Double> stats = new HashMap<>();
         
-        DoubleSummaryStatistics delayStats = records.stream()
-                .mapToDouble(PassengerRecord::getDepartureDelayInMinutes)
-                .summaryStatistics();
+        double minDelay = Double.MAX_VALUE;
+        double maxDelay = Double.MIN_VALUE;
+        double totalDelay = 0;
+        long delayedFlights = 0;
         
-        stats.put("Minimum Delay (min)", delayStats.getMin());
-        stats.put("Maximum Delay (min)", delayStats.getMax());
-        stats.put("Average Delay (min)", delayStats.getAverage());
+        for (PassengerRecord record : records) {
+            double delay = record.getDepartureDelayInMinutes();
+            
+            if (delay < minDelay) minDelay = delay;
+            if (delay > maxDelay) maxDelay = delay;
+            totalDelay = totalDelay + delay;
+            
+            if (delay > 0) {
+                delayedFlights++;
+            }
+        }
         
-        // Count flights with delays
-        long delayedFlights = records.stream()
-                .filter(r -> r.getDepartureDelayInMinutes() > 0)
-                .count();
+        double avgDelay = totalDelay / records.size();
+        
+        stats.put("Minimum Delay (min)", minDelay);
+        stats.put("Maximum Delay (min)", maxDelay);
+        stats.put("Average Delay (min)", avgDelay);
         stats.put("Flights with Delays", (double) delayedFlights);
         stats.put("On-Time Flights", (double) (records.size() - delayedFlights));
         
@@ -171,256 +364,413 @@ public class DataProcessor {
     }
     
     /**
-     * Get arrival delay statistics
-     * @return Map containing min, max, average delay
+     * Calculates arrival delay statistics.
+     * 
+     * @return a Map with delay statistics
      */
     public Map<String, Double> getArrivalDelayStatistics() {
-        Map<String, Double> stats = new LinkedHashMap<>();
+        Map<String, Double> stats = new HashMap<>();
         
-        DoubleSummaryStatistics delayStats = records.stream()
-                .mapToDouble(PassengerRecord::getArrivalDelayInMinutes)
-                .summaryStatistics();
+        double minDelay = Double.MAX_VALUE;
+        double maxDelay = Double.MIN_VALUE;
+        double totalDelay = 0;
         
-        stats.put("Minimum Delay (min)", delayStats.getMin());
-        stats.put("Maximum Delay (min)", delayStats.getMax());
-        stats.put("Average Delay (min)", delayStats.getAverage());
+        for (PassengerRecord record : records) {
+            double delay = record.getArrivalDelayInMinutes();
+            
+            if (delay < minDelay) minDelay = delay;
+            if (delay > maxDelay) maxDelay = delay;
+            totalDelay = totalDelay + delay;
+        }
+        
+        double avgDelay = totalDelay / records.size();
+        
+        stats.put("Minimum Delay (min)", minDelay);
+        stats.put("Maximum Delay (min)", maxDelay);
+        stats.put("Average Delay (min)", avgDelay);
         
         return stats;
     }
     
-    // ==================== SERVICE RATINGS ====================
+    // ================================================================
+    // SERVICE RATINGS
+    // ================================================================
     
     /**
-     * Get average ratings for all services
-     * @return Map of service name to average rating
+     * Calculates average ratings for all services.
+     * 
+     * <p>There are 14 different service categories, each rated 0-5.</p>
+     * 
+     * @return a Map where key is service name and value is average rating
      */
     public Map<String, Double> getAverageServiceRatings() {
-        Map<String, Double> ratings = new LinkedHashMap<>();
+        Map<String, Double> ratings = new HashMap<>();
         
-        ratings.put("Inflight Wifi Service", records.stream().mapToInt(PassengerRecord::getInflightWifiService).average().orElse(0));
-        ratings.put("Departure/Arrival Time Convenient", records.stream().mapToInt(PassengerRecord::getDepartureArrivalTimeConvenient).average().orElse(0));
-        ratings.put("Ease of Online Booking", records.stream().mapToInt(PassengerRecord::getEaseOfOnlineBooking).average().orElse(0));
-        ratings.put("Gate Location", records.stream().mapToInt(PassengerRecord::getGateLocation).average().orElse(0));
-        ratings.put("Food and Drink", records.stream().mapToInt(PassengerRecord::getFoodAndDrink).average().orElse(0));
-        ratings.put("Online Boarding", records.stream().mapToInt(PassengerRecord::getOnlineBoarding).average().orElse(0));
-        ratings.put("Seat Comfort", records.stream().mapToInt(PassengerRecord::getSeatComfort).average().orElse(0));
-        ratings.put("Inflight Entertainment", records.stream().mapToInt(PassengerRecord::getInflightEntertainment).average().orElse(0));
-        ratings.put("On-board Service", records.stream().mapToInt(PassengerRecord::getOnBoardService).average().orElse(0));
-        ratings.put("Leg Room Service", records.stream().mapToInt(PassengerRecord::getLegRoomService).average().orElse(0));
-        ratings.put("Baggage Handling", records.stream().mapToInt(PassengerRecord::getBaggageHandling).average().orElse(0));
-        ratings.put("Check-in Service", records.stream().mapToInt(PassengerRecord::getCheckinService).average().orElse(0));
-        ratings.put("Inflight Service", records.stream().mapToInt(PassengerRecord::getInflightService).average().orElse(0));
-        ratings.put("Cleanliness", records.stream().mapToInt(PassengerRecord::getCleanliness).average().orElse(0));
+        // Totals for each service
+        long totalWifi = 0, totalTime = 0, totalBooking = 0, totalGate = 0;
+        long totalFood = 0, totalBoarding = 0, totalSeat = 0, totalEntertain = 0;
+        long totalOnboard = 0, totalLegroom = 0, totalBaggage = 0, totalCheckin = 0;
+        long totalInflight = 0, totalClean = 0;
+        
+        // Add up all ratings
+        for (PassengerRecord r : records) {
+            totalWifi += r.getInflightWifiService();
+            totalTime += r.getDepartureArrivalTimeConvenient();
+            totalBooking += r.getEaseOfOnlineBooking();
+            totalGate += r.getGateLocation();
+            totalFood += r.getFoodAndDrink();
+            totalBoarding += r.getOnlineBoarding();
+            totalSeat += r.getSeatComfort();
+            totalEntertain += r.getInflightEntertainment();
+            totalOnboard += r.getOnBoardService();
+            totalLegroom += r.getLegRoomService();
+            totalBaggage += r.getBaggageHandling();
+            totalCheckin += r.getCheckinService();
+            totalInflight += r.getInflightService();
+            totalClean += r.getCleanliness();
+        }
+        
+        // Calculate averages
+        int count = records.size();
+        ratings.put("Inflight Wifi Service", (double) totalWifi / count);
+        ratings.put("Departure/Arrival Time Convenient", (double) totalTime / count);
+        ratings.put("Ease of Online Booking", (double) totalBooking / count);
+        ratings.put("Gate Location", (double) totalGate / count);
+        ratings.put("Food and Drink", (double) totalFood / count);
+        ratings.put("Online Boarding", (double) totalBoarding / count);
+        ratings.put("Seat Comfort", (double) totalSeat / count);
+        ratings.put("Inflight Entertainment", (double) totalEntertain / count);
+        ratings.put("On-board Service", (double) totalOnboard / count);
+        ratings.put("Leg Room Service", (double) totalLegroom / count);
+        ratings.put("Baggage Handling", (double) totalBaggage / count);
+        ratings.put("Check-in Service", (double) totalCheckin / count);
+        ratings.put("Inflight Service", (double) totalInflight / count);
+        ratings.put("Cleanliness", (double) totalClean / count);
         
         return ratings;
     }
     
     /**
-     * Get top and bottom rated services
-     * @return String summary of best and worst services
+     * Gets a summary of top and bottom rated services.
+     * 
+     * @return a formatted string with service rankings
      */
     public String getServiceRankingSummary() {
         Map<String, Double> ratings = getAverageServiceRatings();
         
-        // Sort by rating
-        List<Map.Entry<String, Double>> sorted = ratings.entrySet().stream()
-                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-                .collect(Collectors.toList());
+        // Find top 3 and bottom 3
+        String[] services = ratings.keySet().toArray(new String[0]);
         
-        StringBuilder sb = new StringBuilder();
-        sb.append("TOP 3 RATED SERVICES:\n");
-        for (int i = 0; i < 3 && i < sorted.size(); i++) {
-            sb.append(String.format("  %d. %s: %.2f/5.00\n", 
-                    i + 1, sorted.get(i).getKey(), sorted.get(i).getValue()));
+        // Simple bubble sort to rank services by rating
+        for (int i = 0; i < services.length - 1; i++) {
+            for (int j = 0; j < services.length - i - 1; j++) {
+                if (ratings.get(services[j]) < ratings.get(services[j + 1])) {
+                    // Swap
+                    String temp = services[j];
+                    services[j] = services[j + 1];
+                    services[j + 1] = temp;
+                }
+            }
         }
         
-        sb.append("\nBOTTOM 3 RATED SERVICES:\n");
-        for (int i = sorted.size() - 3; i < sorted.size() && i >= 0; i++) {
-            sb.append(String.format("  %d. %s: %.2f/5.00\n", 
-                    sorted.size() - i, sorted.get(i).getKey(), sorted.get(i).getValue()));
+        // Build the result string
+        StringBuilder result = new StringBuilder();
+        result.append("TOP 3 RATED SERVICES:\n");
+        for (int i = 0; i < 3; i++) {
+            result.append("  ").append(i + 1).append(". ");
+            result.append(services[i]).append(": ");
+            result.append(String.format("%.2f", ratings.get(services[i])));
+            result.append("/5.00\n");
         }
         
-        return sb.toString();
+        result.append("\nBOTTOM 3 RATED SERVICES:\n");
+        int len = services.length;
+        for (int i = len - 3; i < len; i++) {
+            result.append("  ").append(len - i).append(". ");
+            result.append(services[i]).append(": ");
+            result.append(String.format("%.2f", ratings.get(services[i])));
+            result.append("/5.00\n");
+        }
+        
+        return result.toString();
     }
     
-    // ==================== SATISFACTION ANALYSIS ====================
+    // ================================================================
+    // SATISFACTION ANALYSIS
+    // ================================================================
     
     /**
-     * Get satisfaction rate by travel class
-     * @return Map of class to satisfaction percentage
+     * Calculates satisfaction rate by travel class.
+     * 
+     * <p>Shows what percentage of each class is satisfied.</p>
+     * 
+     * @return a Map where key is class and value is satisfaction percentage
      */
     public Map<String, Double> getSatisfactionRateByClass() {
-        Map<String, Double> rates = new LinkedHashMap<>();
+        Map<String, Double> rates = new HashMap<>();
         
-        Map<String, List<PassengerRecord>> byClass = records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getTravelClass));
+        // Count totals and satisfied for each class
+        Map<String, Integer> totals = new HashMap<>();
+        Map<String, Integer> satisfied = new HashMap<>();
         
-        for (Map.Entry<String, List<PassengerRecord>> entry : byClass.entrySet()) {
-            long satisfied = entry.getValue().stream().filter(PassengerRecord::isSatisfied).count();
-            double rate = (satisfied * 100.0) / entry.getValue().size();
-            rates.put(entry.getKey(), rate);
+        for (PassengerRecord r : records) {
+            String cls = r.getTravelClass();
+            
+            // Add to total count
+            totals.put(cls, totals.getOrDefault(cls, 0) + 1);
+            
+            // Add to satisfied count if satisfied
+            if (r.isSatisfied()) {
+                satisfied.put(cls, satisfied.getOrDefault(cls, 0) + 1);
+            }
+        }
+        
+        // Calculate percentages
+        for (String cls : totals.keySet()) {
+            int total = totals.get(cls);
+            int sat = satisfied.getOrDefault(cls, 0);
+            double rate = (sat * 100.0) / total;
+            rates.put(cls, rate);
         }
         
         return rates;
     }
     
     /**
-     * Get satisfaction rate by customer type
-     * @return Map of customer type to satisfaction percentage
+     * Calculates satisfaction rate by customer type.
+     * 
+     * @return a Map where key is type and value is satisfaction percentage
      */
     public Map<String, Double> getSatisfactionRateByCustomerType() {
-        Map<String, Double> rates = new LinkedHashMap<>();
+        Map<String, Double> rates = new HashMap<>();
+        Map<String, Integer> totals = new HashMap<>();
+        Map<String, Integer> satisfied = new HashMap<>();
         
-        Map<String, List<PassengerRecord>> byType = records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getCustomerType));
+        for (PassengerRecord r : records) {
+            String type = r.getCustomerType();
+            totals.put(type, totals.getOrDefault(type, 0) + 1);
+            if (r.isSatisfied()) {
+                satisfied.put(type, satisfied.getOrDefault(type, 0) + 1);
+            }
+        }
         
-        for (Map.Entry<String, List<PassengerRecord>> entry : byType.entrySet()) {
-            long satisfied = entry.getValue().stream().filter(PassengerRecord::isSatisfied).count();
-            double rate = (satisfied * 100.0) / entry.getValue().size();
-            rates.put(entry.getKey(), rate);
+        for (String type : totals.keySet()) {
+            int total = totals.get(type);
+            int sat = satisfied.getOrDefault(type, 0);
+            rates.put(type, (sat * 100.0) / total);
         }
         
         return rates;
     }
     
     /**
-     * Get satisfaction rate by travel type
-     * @return Map of travel type to satisfaction percentage
+     * Calculates satisfaction rate by travel type.
+     * 
+     * @return a Map where key is type and value is satisfaction percentage
      */
     public Map<String, Double> getSatisfactionRateByTravelType() {
-        Map<String, Double> rates = new LinkedHashMap<>();
+        Map<String, Double> rates = new HashMap<>();
+        Map<String, Integer> totals = new HashMap<>();
+        Map<String, Integer> satisfied = new HashMap<>();
         
-        Map<String, List<PassengerRecord>> byType = records.stream()
-                .collect(Collectors.groupingBy(PassengerRecord::getTypeOfTravel));
+        for (PassengerRecord r : records) {
+            String type = r.getTypeOfTravel();
+            totals.put(type, totals.getOrDefault(type, 0) + 1);
+            if (r.isSatisfied()) {
+                satisfied.put(type, satisfied.getOrDefault(type, 0) + 1);
+            }
+        }
         
-        for (Map.Entry<String, List<PassengerRecord>> entry : byType.entrySet()) {
-            long satisfied = entry.getValue().stream().filter(PassengerRecord::isSatisfied).count();
-            double rate = (satisfied * 100.0) / entry.getValue().size();
-            rates.put(entry.getKey(), rate);
+        for (String type : totals.keySet()) {
+            int total = totals.get(type);
+            int sat = satisfied.getOrDefault(type, 0);
+            rates.put(type, (sat * 100.0) / total);
         }
         
         return rates;
     }
     
     /**
-     * Get satisfaction rate by age group
-     * @return Map of age group to satisfaction percentage
+     * Calculates satisfaction rate by age group.
+     * 
+     * @return a Map where key is age group and value is satisfaction percentage
      */
     public Map<String, Double> getSatisfactionRateByAgeGroup() {
-        Map<String, Double> rates = new LinkedHashMap<>();
+        Map<String, Double> rates = new HashMap<>();
+        Map<String, Integer> totals = new HashMap<>();
+        Map<String, Integer> satisfied = new HashMap<>();
         
-        Map<String, List<PassengerRecord>> byAge = records.stream()
-                .collect(Collectors.groupingBy(r -> {
-                    int age = r.getAge();
-                    if (age < 18) return "Under 18";
-                    else if (age < 30) return "18-29";
-                    else if (age < 45) return "30-44";
-                    else if (age < 60) return "45-59";
-                    else return "60+";
-                }));
+        for (PassengerRecord r : records) {
+            // Determine age group
+            int age = r.getAge();
+            String group;
+            if (age < 18) group = "Under 18";
+            else if (age < 30) group = "18-29";
+            else if (age < 45) group = "30-44";
+            else if (age < 60) group = "45-59";
+            else group = "60+";
+            
+            totals.put(group, totals.getOrDefault(group, 0) + 1);
+            if (r.isSatisfied()) {
+                satisfied.put(group, satisfied.getOrDefault(group, 0) + 1);
+            }
+        }
         
-        for (Map.Entry<String, List<PassengerRecord>> entry : byAge.entrySet()) {
-            long satisfied = entry.getValue().stream().filter(PassengerRecord::isSatisfied).count();
-            double rate = (satisfied * 100.0) / entry.getValue().size();
-            rates.put(entry.getKey(), rate);
+        for (String group : totals.keySet()) {
+            int total = totals.get(group);
+            int sat = satisfied.getOrDefault(group, 0);
+            rates.put(group, (sat * 100.0) / total);
         }
         
         return rates;
     }
     
-    // ==================== FILTERING ====================
+    // ================================================================
+    // FILTERING METHODS
+    // ================================================================
     
     /**
-     * Filter records by satisfaction status
-     * @param satisfied true for satisfied, false for dissatisfied
-     * @return List of filtered records
+     * Filters records by satisfaction status.
+     * 
+     * <p>Returns only satisfied or dissatisfied passengers.</p>
+     * 
+     * @param wantSatisfied true for satisfied, false for dissatisfied
+     * @return a List of matching records
      */
-    public List<PassengerRecord> filterBySatisfaction(boolean satisfied) {
-        return records.stream()
-                .filter(r -> r.isSatisfied() == satisfied)
-                .collect(Collectors.toList());
+    public List<PassengerRecord> filterBySatisfaction(boolean wantSatisfied) {
+        List<PassengerRecord> result = new ArrayList<>();
+        
+        for (PassengerRecord r : records) {
+            if (r.isSatisfied() == wantSatisfied) {
+                result.add(r);
+            }
+        }
+        
+        return result;
     }
     
     /**
-     * Filter records by travel class
-     * @param travelClass Class name to filter by
-     * @return List of filtered records
+     * Filters records by travel class.
+     * 
+     * @param travelClass the class to filter by (e.g., "Business")
+     * @return a List of matching records
      */
     public List<PassengerRecord> filterByClass(String travelClass) {
-        return records.stream()
-                .filter(r -> r.getTravelClass().equalsIgnoreCase(travelClass))
-                .collect(Collectors.toList());
+        List<PassengerRecord> result = new ArrayList<>();
+        
+        for (PassengerRecord r : records) {
+            // equalsIgnoreCase ignores uppercase/lowercase differences
+            if (r.getTravelClass().equalsIgnoreCase(travelClass)) {
+                result.add(r);
+            }
+        }
+        
+        return result;
     }
     
     /**
-     * Filter records by age range
-     * @param minAge Minimum age (inclusive)
-     * @param maxAge Maximum age (inclusive)
-     * @return List of filtered records
+     * Filters records by age range.
+     * 
+     * @param minAge minimum age (inclusive)
+     * @param maxAge maximum age (inclusive)
+     * @return a List of matching records
      */
     public List<PassengerRecord> filterByAgeRange(int minAge, int maxAge) {
-        return records.stream()
-                .filter(r -> r.getAge() >= minAge && r.getAge() <= maxAge)
-                .collect(Collectors.toList());
+        List<PassengerRecord> result = new ArrayList<>();
+        
+        for (PassengerRecord r : records) {
+            int age = r.getAge();
+            if (age >= minAge && age <= maxAge) {
+                result.add(r);
+            }
+        }
+        
+        return result;
     }
     
     /**
-     * Search records by ID
-     * @param id Passenger ID to search for
-     * @return Optional containing the record if found
+     * Searches for a passenger by ID.
+     * 
+     * @param id the passenger ID to search for
+     * @return the matching record, or null if not found
      */
-    public Optional<PassengerRecord> searchById(int id) {
-        return records.stream()
-                .filter(r -> r.getId() == id)
-                .findFirst();
+    public PassengerRecord searchById(int id) {
+        for (PassengerRecord r : records) {
+            if (r.getId() == id) {
+                return r;
+            }
+        }
+        return null;
     }
     
-    // ==================== COMPREHENSIVE REPORT ====================
+    // ================================================================
+    // COMPREHENSIVE REPORT
+    // ================================================================
     
     /**
-     * Generate a comprehensive dataset summary
-     * @return Formatted summary string
+     * Generates a comprehensive summary of the dataset.
+     * 
+     * <p>This creates a formatted report with key statistics.</p>
+     * 
+     * @return a formatted summary string
      */
     public String generateComprehensiveSummary() {
         StringBuilder sb = new StringBuilder();
         
-        sb.append("\n╔════════════════════════════════════════════════════════════╗\n");
-        sb.append("║       AIRLINE PASSENGER SATISFACTION - DATA SUMMARY        ║\n");
-        sb.append("╚════════════════════════════════════════════════════════════╝\n\n");
+        sb.append("\n========================================\n");
+        sb.append("  AIRLINE SATISFACTION DATA SUMMARY\n");
+        sb.append("========================================\n\n");
         
-        // Dataset Overview
-        sb.append("─────────────────── DATASET OVERVIEW ───────────────────\n");
-        sb.append(String.format("  Total Records: %,d\n", records.size()));
-        sb.append(String.format("  Satisfied Passengers: %,d (%.1f%%)\n", 
-                filterBySatisfaction(true).size(),
-                (filterBySatisfaction(true).size() * 100.0) / records.size()));
-        sb.append(String.format("  Dissatisfied Passengers: %,d (%.1f%%)\n", 
-                filterBySatisfaction(false).size(),
-                (filterBySatisfaction(false).size() * 100.0) / records.size()));
+        // Basic counts
+        int total = records.size();
+        int satisfied = filterBySatisfaction(true).size();
+        int dissatisfied = total - satisfied;
         
-        // Gender Distribution
-        sb.append("\n─────────────────── GENDER DISTRIBUTION ───────────────────\n");
-        getGenderDistribution().forEach((k, v) -> 
-                sb.append(String.format("  %s: %,d (%.1f%%)\n", k, v, (v * 100.0) / records.size())));
+        sb.append("DATASET OVERVIEW\n");
+        sb.append("----------------\n");
+        sb.append("  Total Records: ").append(total).append("\n");
+        sb.append("  Satisfied: ").append(satisfied);
+        sb.append(" (").append(String.format("%.1f", satisfied * 100.0 / total)).append("%)\n");
+        sb.append("  Dissatisfied: ").append(dissatisfied);
+        sb.append(" (").append(String.format("%.1f", dissatisfied * 100.0 / total)).append("%)\n");
         
-        // Age Statistics
-        sb.append("\n─────────────────── AGE STATISTICS ───────────────────\n");
-        getAgeStatistics().forEach((k, v) -> 
-                sb.append(String.format("  %s: %.1f\n", k, v)));
+        // Gender
+        sb.append("\nGENDER DISTRIBUTION\n");
+        sb.append("-------------------\n");
+        Map<String, Long> genders = getGenderDistribution();
+        for (String gender : genders.keySet()) {
+            long count = genders.get(gender);
+            sb.append("  ").append(gender).append(": ").append(count);
+            sb.append(" (").append(String.format("%.1f", count * 100.0 / total)).append("%)\n");
+        }
+        
+        // Age
+        sb.append("\nAGE STATISTICS\n");
+        sb.append("--------------\n");
+        Map<String, Double> ageStats = getAgeStatistics();
+        sb.append("  Minimum Age: ").append(ageStats.get("Minimum Age").intValue()).append("\n");
+        sb.append("  Maximum Age: ").append(ageStats.get("Maximum Age").intValue()).append("\n");
+        sb.append("  Average Age: ").append(String.format("%.1f", ageStats.get("Average Age"))).append("\n");
         
         // Flight Distance
-        sb.append("\n─────────────────── FLIGHT DISTANCE ───────────────────\n");
+        sb.append("\nFLIGHT DISTANCE\n");
+        sb.append("---------------\n");
         Map<String, Double> distStats = getFlightDistanceStatistics();
-        sb.append(String.format("  Average Distance: %.1f miles\n", distStats.get("Average Distance")));
-        sb.append(String.format("  Shortest Flight: %.0f miles\n", distStats.get("Minimum Distance")));
-        sb.append(String.format("  Longest Flight: %.0f miles\n", distStats.get("Maximum Distance")));
+        sb.append("  Average: ").append(String.format("%.1f", distStats.get("Average Distance"))).append(" miles\n");
+        sb.append("  Shortest: ").append(distStats.get("Minimum Distance").intValue()).append(" miles\n");
+        sb.append("  Longest: ").append(distStats.get("Maximum Distance").intValue()).append(" miles\n");
         
-        // Overall Service Rating
-        sb.append("\n─────────────────── SERVICE RATINGS SUMMARY ───────────────────\n");
-        double overallAvg = getAverageServiceRatings().values().stream()
-                .mapToDouble(Double::doubleValue).average().orElse(0);
-        sb.append(String.format("  Overall Average Rating: %.2f / 5.00\n", overallAvg));
-        sb.append(getServiceRankingSummary());
+        // Service Ratings Summary
+        sb.append("\nSERVICE RATINGS\n");
+        sb.append("---------------\n");
+        Map<String, Double> ratings = getAverageServiceRatings();
+        double overallAvg = 0;
+        for (Double rating : ratings.values()) {
+            overallAvg += rating;
+        }
+        overallAvg = overallAvg / ratings.size();
+        sb.append("  Overall Average: ").append(String.format("%.2f", overallAvg)).append(" / 5.00\n");
+        sb.append("\n").append(getServiceRankingSummary());
         
         return sb.toString();
     }
