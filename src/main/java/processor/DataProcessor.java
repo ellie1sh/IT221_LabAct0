@@ -393,27 +393,34 @@ public class DataProcessor {
         int total = records.size();
         int satisfied = filterBySatisfaction(true).size();
         
-        sb.append("\n=== DATA SUMMARY ===\n\n");
-        sb.append("Total Records: ").append(total).append("\n");
-        sb.append("Satisfied: ").append(satisfied).append(" (");
+        sb.append("\n  OVERVIEW\n");
+        sb.append("  ----------------------------------------\n");
+        sb.append("  Total Records    : ").append(total).append("\n");
+        sb.append("  Satisfied        : ").append(satisfied).append(" (");
         sb.append(String.format("%.1f", satisfied * 100.0 / total)).append("%)\n");
-        sb.append("Dissatisfied: ").append(total - satisfied).append(" (");
-        sb.append(String.format("%.1f", (total - satisfied) * 100.0 / total)).append("%)\n\n");
+        sb.append("  Dissatisfied     : ").append(total - satisfied).append(" (");
+        sb.append(String.format("%.1f", (total - satisfied) * 100.0 / total)).append("%)\n");
         
-        sb.append("Gender:\n");
+        sb.append("\n  GENDER DISTRIBUTION\n");
+        sb.append("  ----------------------------------------\n");
         for (Map.Entry<String, Long> e : getGenderDistribution().entrySet()) {
-            sb.append("  ").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+            sb.append("  ").append(String.format("%-15s", e.getKey())).append(": ").append(e.getValue()).append("\n");
         }
         
-        sb.append("\nAge: Min=").append(getAgeStatistics().get("Minimum Age").intValue());
-        sb.append(", Max=").append(getAgeStatistics().get("Maximum Age").intValue());
-        sb.append(", Avg=").append(String.format("%.1f", getAgeStatistics().get("Average Age"))).append("\n");
+        sb.append("\n  AGE STATISTICS\n");
+        sb.append("  ----------------------------------------\n");
+        sb.append("  Minimum Age      : ").append(getAgeStatistics().get("Minimum Age").intValue()).append("\n");
+        sb.append("  Maximum Age      : ").append(getAgeStatistics().get("Maximum Age").intValue()).append("\n");
+        sb.append("  Average Age      : ").append(String.format("%.1f", getAgeStatistics().get("Average Age"))).append("\n");
         
-        sb.append("\nFlight Distance: Avg=");
+        sb.append("\n  FLIGHT DISTANCE\n");
+        sb.append("  ----------------------------------------\n");
+        sb.append("  Average Distance : ");
         sb.append(String.format("%.1f", getFlightDistanceStatistics().get("Average Distance")));
         sb.append(" miles\n");
         
-        sb.append("\nService Ratings:\n");
+        sb.append("\n  SERVICE RATINGS SUMMARY\n");
+        sb.append("  ----------------------------------------\n");
         sb.append(getServiceRankingSummary());
         
         return sb.toString();
