@@ -9,8 +9,7 @@ package model;
  */
 public class PassengerRecord {
     
-    // Identification
-    private int rowIndex;
+    // Identification (7-digit ID)
     private int id;
     
     // Demographics
@@ -51,7 +50,6 @@ public class PassengerRecord {
     public PassengerRecord() {}
     
     // Getters
-    public int getRowIndex() { return rowIndex; }
     public int getId() { return id; }
     public String getGender() { return gender; }
     public String getCustomerType() { return customerType; }
@@ -79,7 +77,6 @@ public class PassengerRecord {
     public String getSatisfaction() { return satisfaction; }
     
     // Setters
-    public void setRowIndex(int rowIndex) { this.rowIndex = rowIndex; }
     public void setId(int id) { this.id = id; }
     public void setGender(String gender) { this.gender = gender; }
     public void setCustomerType(String customerType) { this.customerType = customerType; }

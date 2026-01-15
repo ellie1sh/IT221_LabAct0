@@ -63,39 +63,38 @@ public class CSVReader {
     private PassengerRecord parseLine(String line, int lineNumber) {
         String[] values = line.split(",");
         
-        if (values.length < 26) {
+        if (values.length < 25) {
             return null;
         }
         
         PassengerRecord record = new PassengerRecord();
         
         try {
-            record.setRowIndex(parseInteger(values[0], 0));
-            record.setId(parseInteger(values[1], 0));
-            record.setGender(values[2].trim());
-            record.setCustomerType(values[3].trim());
-            record.setAge(parseInteger(values[4], 0));
-            record.setTypeOfTravel(values[5].trim());
-            record.setTravelClass(values[6].trim());
-            record.setFlightDistance(parseInteger(values[7], 0));
-            record.setInflightWifiService(parseInteger(values[8], 0));
-            record.setDepartureArrivalTimeConvenient(parseInteger(values[9], 0));
-            record.setEaseOfOnlineBooking(parseInteger(values[10], 0));
-            record.setGateLocation(parseInteger(values[11], 0));
-            record.setFoodAndDrink(parseInteger(values[12], 0));
-            record.setOnlineBoarding(parseInteger(values[13], 0));
-            record.setSeatComfort(parseInteger(values[14], 0));
-            record.setInflightEntertainment(parseInteger(values[15], 0));
-            record.setOnBoardService(parseInteger(values[16], 0));
-            record.setLegRoomService(parseInteger(values[17], 0));
-            record.setBaggageHandling(parseInteger(values[18], 0));
-            record.setCheckinService(parseInteger(values[19], 0));
-            record.setInflightService(parseInteger(values[20], 0));
-            record.setCleanliness(parseInteger(values[21], 0));
-            record.setDepartureDelayInMinutes(parseDouble(values[22], 0.0));
-            record.setArrivalDelayInMinutes(parseDouble(values[23], 0.0));
-            record.setSatisfaction(values[24].trim());
-            record.setDate(values[25].trim());
+            record.setId(parseInteger(values[0], 0));
+            record.setGender(values[1].trim());
+            record.setCustomerType(values[2].trim());
+            record.setAge(parseInteger(values[3], 0));
+            record.setTypeOfTravel(values[4].trim());
+            record.setTravelClass(values[5].trim());
+            record.setFlightDistance(parseInteger(values[6], 0));
+            record.setInflightWifiService(parseInteger(values[7], 0));
+            record.setDepartureArrivalTimeConvenient(parseInteger(values[8], 0));
+            record.setEaseOfOnlineBooking(parseInteger(values[9], 0));
+            record.setGateLocation(parseInteger(values[10], 0));
+            record.setFoodAndDrink(parseInteger(values[11], 0));
+            record.setOnlineBoarding(parseInteger(values[12], 0));
+            record.setSeatComfort(parseInteger(values[13], 0));
+            record.setInflightEntertainment(parseInteger(values[14], 0));
+            record.setOnBoardService(parseInteger(values[15], 0));
+            record.setLegRoomService(parseInteger(values[16], 0));
+            record.setBaggageHandling(parseInteger(values[17], 0));
+            record.setCheckinService(parseInteger(values[18], 0));
+            record.setInflightService(parseInteger(values[19], 0));
+            record.setCleanliness(parseInteger(values[20], 0));
+            record.setDepartureDelayInMinutes(parseDouble(values[21], 0.0));
+            record.setArrivalDelayInMinutes(parseDouble(values[22], 0.0));
+            record.setSatisfaction(values[23].trim());
+            record.setDate(values[24].trim());
             
             return record;
         } catch (Exception e) {
