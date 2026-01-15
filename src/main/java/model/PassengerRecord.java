@@ -10,8 +10,7 @@ package model;
 public class PassengerRecord {
     
     // Identification
-    private int rowIndex;
-    private int id;
+    private String id;
     
     // Demographics
     private String gender;
@@ -51,8 +50,7 @@ public class PassengerRecord {
     public PassengerRecord() {}
     
     // Getters
-    public int getRowIndex() { return rowIndex; }
-    public int getId() { return id; }
+    public String getId() { return id; }
     public String getGender() { return gender; }
     public String getCustomerType() { return customerType; }
     public int getAge() { return age; }
@@ -79,8 +77,7 @@ public class PassengerRecord {
     public String getSatisfaction() { return satisfaction; }
     
     // Setters
-    public void setRowIndex(int rowIndex) { this.rowIndex = rowIndex; }
-    public void setId(int id) { this.id = id; }
+    public void setId(String id) { this.id = id; }
     public void setGender(String gender) { this.gender = gender; }
     public void setCustomerType(String customerType) { this.customerType = customerType; }
     public void setAge(int age) { this.age = age; }

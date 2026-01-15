@@ -204,7 +204,8 @@ public class Main {
     }
     
     private static void searchById() {
-        int id = getIntInput("Enter ID: ");
+        System.out.print("Enter ID: ");
+        String id = scanner.nextLine().trim();
         PassengerRecord r = processor.searchById(id);
         
         System.out.println("\n--- Search Result ---");
@@ -263,12 +264,12 @@ public class Main {
     
     private static void showSample() {
         System.out.println("\n--- Sample Records (First 10) ---");
-        System.out.printf("%-8s %-8s %-4s %-10s %-8s %-12s\n", "ID", "Gender", "Age", "Class", "Date", "Satisfied");
+        System.out.printf("%-12s %-8s %-4s %-10s %-8s %-12s\n", "ID", "Gender", "Age", "Class", "Date", "Satisfied");
         
         int count = 0;
         for (PassengerRecord r : records) {
             if (count >= 10) break;
-            System.out.printf("%-8d %-8s %-4d %-10s %-8s %-12s\n",
+            System.out.printf("%-12s %-8s %-4d %-10s %-8s %-12s\n",
                 r.getId(), r.getGender(), r.getAge(), 
                 r.getTravelClass(), r.getDate(), r.getSatisfaction());
             count++;
