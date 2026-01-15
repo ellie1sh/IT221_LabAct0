@@ -378,9 +378,9 @@ public class DataProcessor {
     }
     
     /** @return record with matching ID or null */
-    public PassengerRecord searchById(int id) {
+    public PassengerRecord searchById(String id) {
         for (PassengerRecord r : records) {
-            if (r.getId() == id) {
+            if (r.getId().equalsIgnoreCase(id)) {
                 return r;
             }
         }
